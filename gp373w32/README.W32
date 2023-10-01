@@ -1,0 +1,47 @@
+This is the second edition of a binary distribution of gnuplot 3.7.3,
+compiled for 32bit Windows platforms (Win9x, NT, 2000, and XP) using the
+free Borland C++ 5.5 command line compiler. The first one was riddled
+by a makefile bug that had wgnupl32.exe built as a console
+application, and wouldn't display the "File Open/Save" dialog correctly.
+The actual makefile used to compile this package is included, FYI.
+
+PNG and (uncompressed) GIF output drivers are compiled in.
+
+There's one possibly important last-minute fix in this build that is
+not in the official source tarball.  This concerns handling of floating
+point exceptions.  The Borland Runtime library doesn't seem to catch
+them properly, leading to crashes (e.g. in prob.dem for the chi2
+distribution plots).  To avoid this, I've disabled FPE generation
+entirely using this patch:
+
+--- gnuplot-3.7.3/plot.c        Mon Mar 11 17:10:44 2002
++++ gp373.hbb/plot.c	Fri Dec 20 02:43:20 2002
+@@ -343,7 +343,8 @@ char **argv;
+ #endif /* MSDOS !Windows */
+ /* HBB: Seems this isn't needed any more for DJGPP V2? */
+ /* HBB: disable all floating point exceptions, just keep running... */
+-#if defined(DJGPP) && (DJGPP!=2)
++/* HBB 20021105: try if this fix helps with broken Borland Win32 compiles, too: */
++#if (defined(DJGPP) && (DJGPP!=2)) || (defined(__TURBOC__) && defined(WIN32))
+     _control87(MCW_EM, MCW_EM);
+ #endif
+ 
+Not much installation necessary: just keep all these files in a single
+directory, and call wgnuplot.exe. If you want a program manager icon,
+create one (dragging wgnuplot.exe into a progman window is usually
+sufficient).  You may also want to assign filename extensions like *.plt
+or *.gpl to be executed by gnuplot.
+
+If you have any unusual problems with this one, feel free to tell about
+them. My mail address can be found below, but the 'bug-gnuplot' address
+shown in the startup may be the better place for more general problems.
+
+As usual, I disclaim any responsibility for anything this program (I can
+only say it works for me --- but that's not saying anything about what it 
+will or will not do on/to your machine. 'Thou hast been warned' :-) Just
+be sure to tell me if anything goes wrong, so it doesn't spread.
+
+Hans-Bernhard Broeker
+RWTH Aachen, III. physikalisches Institut
+Aachen, Germany
+broeker@physik.rwth-aachen.de
