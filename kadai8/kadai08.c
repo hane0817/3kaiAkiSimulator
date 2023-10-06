@@ -9,7 +9,7 @@ typedef struct
     int buturi;
 } result;
 
-double get_average(result *seito[], int ninzu, double *sugakuHeikin, double *eigoHeikin, double *buturiHeikin)
+double get_average(result *seito, int ninzu, double *sugakuHeikin, double *eigoHeikin, double *buturiHeikin)
 {
     double sugakuSum = 0;
     double eigoSum = 0;
@@ -17,38 +17,52 @@ double get_average(result *seito[], int ninzu, double *sugakuHeikin, double *eig
 
     for (int i = 0; i < ninzu; i++)
     {
-        sugakuSum += seito[i]->sugaku;
-        eigoSum += seito[i]->eigo;
-        buturiSum += seito[i]->buturi;
+        sugakuSum += seito[i].sugaku;
+        eigoSum += seito[i].eigo;
+        buturiSum += seito[i].buturi;
     }
 
-    *sugakuHeikin = sugakuSum / ninzu;
-    *eigoHeikin = eigoSum / ninzu;
-    *buturiHeikin = buturiSum / ninzu;
+    *sugakuHeikin = sugakuSum / (double)ninzu;
+    *eigoHeikin = eigoSum / (double)ninzu;
+    *buturiHeikin = buturiSum / (double)ninzu;
 }
 
-double get_std(int *sujiHairetu, int sujiKosu)
+double get_std(result *seito, int ninzu, double *sugakuHeikin, double *sugakuHyojunhensa, double *eigoHeikin, double *eigoHyojunhensa, double *buturiHeikin, double *buturiHyojunhensa)
 {
-    double sum = 0;
-    double nijouSum = 0;
-    double heikin = 0;
-    double nijouHeikin = 0;
-    double bunsan = 0;
-    double hyojunhensa = 0;
+    double sugakuSum = 0;
+    double eigoSum = 0;
+    double buturiSum = 0;
+    double sugakuNijouSum = 0;
+    double eigoNijouSum = 0;
+    double buturiNijouSum = 0;
+    double sugakuNijouHeikin = 0;
+    double eigoNijouHeikin = 0;
+    double buturiNijouHeikin = 0;
+    double sugakuBunsan = 0;
+    double eigoBunsan = 0;
+    double buturiBunsan = 0;
 
-    for (int i = 0; i < sujiKosu; i++)
+    for (int i = 0; i < ninzu; i++)
     {
-        sum += sujiHairetu[i];
-        nijouSum += pow(sujiHairetu[i], 2);
+        sugakuSum += seito[i].sugaku;
+        sugakuNijouSum += pow(seito[i].sugaku, 2);
+        eigoSum += seito[i].eigo;
+        eigoNijouSum += pow(seito[i].eigo, 2);
+        buturiSum += seito[i].buturi;
+        buturiNijouSum += pow(seito[i].buturi, 2);
     }
 
-    heikin = sum / sujiKosu;
-    nijouHeikin = nijouSum / sujiKosu;
+    sugakuNijouHeikin = sugakuNijouSum / ninzu;
+    eigoNijouHeikin = eigoNijouSum / ninzu;
+    buturiNijouHeikin = buturiNijouSum / ninzu;
 
-    bunsan = nijouHeikin - pow(heikin, 2);
-    hyojunhensa = sqrt(bunsan);
+    sugakuBunsan = sugakuNijouHeikin - pow(*sugakuHeikin, 2);
+    eigoBunsan = eigoNijouHeikin - pow(*eigoHeikin, 2);
+    buturiBunsan = buturiNijouHeikin - pow(*buturiHeikin, 2);
 
-    return hyojunhensa;
+    *sugakuHyojunhensa = sqrt(sugakuBunsan);
+    *eigoHyojunhensa = sqrt(eigoBunsan);
+    *buturiHyojunhensa = sqrt(buturiBunsan);
 }
 
 int main(void)
@@ -56,15 +70,16 @@ int main(void)
     FILE *fin;
     FILE *fout;
 
-    result seito[5];
-    double *sugakuHeikin = 0;
-    double *eigoHeikin = 0;
-    double *buturiHeikin = 0;
-    double *sugakuHyojunhensa = 0;
-    double *eigoHyojunhensa = 0;
-    double *buturiHyojunhensa = 0;
-
+    result *seito;
     int ninzu = 5;
+
+    seito = (result *)calloc(ninzu, sizeof(result));
+    double sugakuHeikin = 0;
+    double eigoHeikin = 0;
+    double buturiHeikin = 0;
+    double sugakuHyojunhensa = 0;
+    double eigoHyojunhensa = 0;
+    double buturiHyojunhensa = 0;
 
     fin = fopen("in/exam08.dat", "r");
 
@@ -75,12 +90,13 @@ int main(void)
         fscanf(fin, "%d", &seito[i].buturi);
     }
 
-    get_average(seito, ninzu, sugakuHeikin, eigoHeikin, buturiHeikin);
+    get_average(seito, ninzu, &sugakuHeikin, &eigoHeikin, &buturiHeikin);
 
-        fout = fopen("out/exam08.dat", "w");
+    get_std(seito, ninzu, &sugakuHeikin, &sugakuHyojunhensa, &eigoHeikin, &eigoHyojunhensa, &buturiHeikin, &buturiHyojunhensa);
 
-    for (int i = 0; i < ninzu; i++)
-    {
-        fprintf(fout, "数学:平均=%d,標準偏差=", sugakuHeikin);
-    }
+    fout = fopen("out/exam08.dat", "w");
+
+    fprintf(fout, "数学:平均=%lf,標準偏差=%lf\n", sugakuHeikin, sugakuHyojunhensa);
+    fprintf(fout, "英語:平均=%lf,標準偏差=%lf\n", eigoHeikin, eigoHyojunhensa);
+    fprintf(fout, "数学:平均=%lf,標準偏差=%lf\n", buturiHeikin, buturiHyojunhensa);
 }
