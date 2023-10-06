@@ -99,4 +99,6 @@ int main(void)
     fprintf(fout, "数学:平均=%lf,標準偏差=%lf\n", sugakuHeikin, sugakuHyojunhensa);
     fprintf(fout, "英語:平均=%lf,標準偏差=%lf\n", eigoHeikin, eigoHyojunhensa);
     fprintf(fout, "数学:平均=%lf,標準偏差=%lf\n", buturiHeikin, buturiHyojunhensa);
+
+    free(seito);
 }
