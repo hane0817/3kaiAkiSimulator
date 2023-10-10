@@ -62,4 +62,6 @@ int main(void)
     {
         printf("%d ", x[itr]);
     }
+
+    free(fin);
 }
