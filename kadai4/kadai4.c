@@ -46,19 +46,19 @@ int main(void)
             }
             else
             {
-                sum[2] = x[2][j];
+                sum[2] += x[2][j];
                 sum2[2] += pow(x[2][j], 2);
             }
         }
     }
 
-    suugakuHeikin = sum[0] / 5;
-    eigoHeikin = sum[1] / 5;
-    buturiHeikin = sum[2] / 5;
+    suugakuHeikin = sum[0] / 5.0;
+    eigoHeikin = sum[1] / 5.0;
+    buturiHeikin = sum[2] / 5.0;
 
-    suugakuNijouHeikin = sum2[0] / 5;
-    eigoNijouHeikin = sum2[1] / 5;
-    buturiNijouHeikin = sum2[2] / 5;
+    suugakuNijouHeikin = sum2[0] / 5.0;
+    eigoNijouHeikin = sum2[1] / 5.0;
+    buturiNijouHeikin = sum2[2] / 5.0;
 
     suugakuBunsan = suugakuNijouHeikin - pow(suugakuHeikin, 2);
     eigoBunsan = eigoNijouHeikin - pow(eigoHeikin, 2);
