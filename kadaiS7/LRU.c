@@ -1,11 +1,13 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include "MT.h"
 
-typedef struct
+typedef struct __cash // 経過時間は昇順でキャッシュ容量であるリスト構造に入れるので必要なし
 {
     int contentsID;
-    int elapsedTime;
+    struct __cash *next;
+    struct __cash *prev;
 } cash;
 
 int main(void)
@@ -14,11 +16,9 @@ int main(void)
     double bunbo[17] = {0};         // zipfの分母 thetaごとに分ける
     double bunsi[17][1000] = {0.0}; // zipfの分子 thetaごとに分けて分子を1000こ求める
     double zipf[17][1000] = {0.0};  // 左がジャンル 右が何番目か zipfの確率を格納
-    double randomNum = 0.0;         // ランダムな値を代入する
+    double randomNum = 0.0;         // ランダムな値を生成する
 
     double theta[17] = {0}; // シータ 左はシータの数，右はシータの値 0.4などをいれる
-
-    cash cashCapacity[17][100] = {0}; // キャッシュ容量
 
     for (int i = 0; i < 17; i++)
     {
@@ -48,30 +48,31 @@ int main(void)
         }
     }
 
-    for (int j = 0; j < 1000; j++)
+    for (int j = 0; j < 1000; j++) // zipfを求める
     {
-        for (int i = 0; i < 17; i++) // zipfを求める
+        for (int i = 0; i < 17; i++)
         {
             zipf[i][j] = bunsi[i][j] / bunbo[i];
         }
     }
 
-    for (int i = 0; i < 10000; i++)
+    cash *cashFirst = malloc(1 * sizeof(cash)); // キャッシュ容量の一つ目を作成
+    cashFirst->contentsID = 1000 * genrand_real2();
+
+    cash *head = cashFirst;
+    cash *tail = cashFirst;
+    cashFirst->prev = cashFirst->next = cashFirst;
+
+    for (int i = 0; i < 999; i++) // 1000個キャッシュが入ったキャッシュ容量の作成
     {
-        randomNum = genrand_real2();
-        cash cash;
-        cash.contentsID = randomNum;
-        cash.elapsedTime = 0;
-        for (int j = 0; j < 17; j++)
-        {
-            for (int k = 0; k < 1000; k++)
-            {
-                if (cash.contentsID < zipf[j][k])
-                {
-                    count[j][k]++;
-                    break;
-                }
-            }
-        }
+        cash *cash = malloc(1 * sizeof(cash));
+
+        cash->contentsID = 1000 * genrand_real2();
+
+        cash->next = tail->next; /** (1) **/
+        cash->prev = tail;       /** (2) **/
+        tail->next->prev = cash; /** (3) **/
+        tail->next = cash;       /** (4) **/
+        tail = tail->next;       /** (5) **/
     }
 }
