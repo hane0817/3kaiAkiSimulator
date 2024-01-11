@@ -57,7 +57,16 @@ int main(void)
     }
 
     cash *cashFirst = malloc(1 * sizeof(cash)); // キャッシュ容量の一つ目を作成
-    cashFirst->contentsID = 1000 * genrand_real2();
+    randomNum = genrand_real2();
+
+    for (int i = 0; i < 1000; i++)
+    {
+        if (randomNum < zipf[0][i])
+        {
+            cashFirst->contentsID = i;
+            break;
+        }
+    }
 
     cash *head = cashFirst;
     cash *tail = cashFirst;
@@ -65,14 +74,91 @@ int main(void)
 
     for (int i = 0; i < 999; i++) // 1000個キャッシュが入ったキャッシュ容量の作成
     {
-        cash *cash = malloc(1 * sizeof(cash));
+        cash *x = malloc(1 * sizeof(cash));
 
-        cash->contentsID = 1000 * genrand_real2();
+        randomNum = genrand_real2();
 
-        cash->next = tail->next; /** (1) **/
-        cash->prev = tail;       /** (2) **/
-        tail->next->prev = cash; /** (3) **/
-        tail->next = cash;       /** (4) **/
-        tail = tail->next;       /** (5) **/
+        for (int i = 0; i < 1000; i++) // contentsIDの決定
+        {
+            if (randomNum < zipf[0][i])
+            {
+                x->contentsID = i;
+                break;
+            }
+        }
+
+        x->next = tail->next; /** (1) **/
+        x->prev = tail;       /** (2) **/
+        tail->next->prev = x; /** (3) **/
+        tail->next = x;       /** (4) **/
+        tail = tail->next;    /** (5) **/
+    }
+
+    int bingoCash[17] = {0}; // キャッシュがヒットした数
+
+    for (int i = 0; i < soukaisu; i++) // 実験開始
+    {
+        cash *generatedCash = malloc(1 * sizeof(cash)); // 要求キャッシュ
+
+        randomNum = genrand_real2();
+
+        for (int i = 0; i < 1000; i++) // コンテンツIDの決定
+        {
+            if (randomNum < zipf[0][i])
+            {
+                generatedCash->contentsID = i;
+                break;
+            }
+        }
+
+        cash *ptr = malloc(1 * sizeof(cash)); // 調べる用のポインター
+        ptr = head;
+        int counter = 0;
+        while (1)
+        {
+            if (generatedCash->contentsID == head->contentsID) // headでヒット
+            {
+                ptr->next = head;
+                tail = tail->next;
+                bingoCash[0]++;
+                counter++;
+                break;
+            }
+            else if (generatedCash->contentsID == ptr->contentsID) // headとtailの間でヒット
+            {
+                ptr->prev->next = ptr->next; // 1
+                ptr->next->prev = ptr->prev; // 2
+                tail->next = ptr;            // 3
+                ptr->prev = tail;            // 4
+                ptr->next = head;            // 5
+                ptr = head;                  // 6
+                bingoCash[0]++;
+                counter++;
+
+                break;
+            }
+            else if (generatedCash->contentsID == tail->contentsID) // tailでヒット
+            {
+                bingoCash[0]++;
+                counter++;
+
+                break;
+            }
+            else if (ptr == tail && generatedCash->contentsID != tail->contentsID)
+            {
+                // ヒットせず
+
+                tail->next = generatedCash;
+                generatedCash->prev = tail;
+                generatedCash->next = head->next;
+                head = head->next;
+                tail = tail->next;
+                head->prev = tail;
+                counter++;
+                break;
+            }
+            ptr = ptr->next;
+            counter++;
+        }
     }
 }
