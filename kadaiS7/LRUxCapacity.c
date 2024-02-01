@@ -89,6 +89,7 @@ int main(void)
                 ptr = ptr->next;
             }
         } // キャッシュためる終了
+
         for (int k = 0; k < 10000; k++)
         {
             cash *x = malloc(1 * sizeof(cash));

@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="OOjRIk-tJpbBCQ3SPSWM" name="ページ1">
-        <mxGraphModel dx="1456" dy="652" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="816" dy="1012" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -24,10 +24,7 @@
                 <mxCell id="7" value="zipfをそれぞれコンテンツ事に求める" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;" parent="1" vertex="1">
                     <mxGeometry x="120" y="290" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="10" value="キャッシュの容量overの時" style="rhombus;whiteSpace=wrap;html=1;fontSize=18;rounded=0;" parent="1" vertex="1">
-                    <mxGeometry x="490" y="1451" width="120" height="110" as="geometry"/>
-                </mxCell>
-                <mxCell id="54" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="12" target="47">
+                <mxCell id="54" value="" style="edgeStyle=none;html=1;" parent="1" source="12" target="47" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="12" value="生成したキャッシュをtailに追加" style="whiteSpace=wrap;html=1;fontSize=18;rounded=0;" parent="1" vertex="1">
@@ -92,7 +89,7 @@
                 <mxCell id="47" value="同じコンテンツがすでにキャッシュ容量に存在した場合" style="rhombus;whiteSpace=wrap;html=1;fontSize=18;rounded=0;" parent="1" vertex="1">
                     <mxGeometry x="75" y="980" width="210" height="175" as="geometry"/>
                 </mxCell>
-                <mxCell id="55" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="52" target="31">
+                <mxCell id="55" value="" style="edgeStyle=none;html=1;" parent="1" source="52" target="31" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="52" value="元々存在した連結リストのキャッシュを削除" style="whiteSpace=wrap;html=1;fontSize=18;rounded=0;" parent="1" vertex="1">
