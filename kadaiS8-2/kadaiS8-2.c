@@ -38,7 +38,6 @@ int main(void)
             if (q > K) // 客の人数がKを超えている場合
             {
                 t++;
-                total_q[i] += q;
                 overflow_count++;
                 continue;
             }
