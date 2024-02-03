@@ -7,7 +7,7 @@ int main(void)
 {
     init_genrand(10);
     int q = 0;              // 待ち行列長
-    int total_q = 0;        // 待ち行列長の合計
+    int total_q[26] = {0};  // 待ち行列長の合計
     int t = 0;              // 時刻
     int sim_len = 1000000;  // シミュレートする制限時間
     int K = 10;             // 待ち行列長の限界
@@ -38,7 +38,7 @@ int main(void)
             if (q > K) // 客の人数がKを超えている場合
             {
                 t++;
-                total_q += q;
+                total_q[i] += q;
                 overflow_count++;
                 continue;
             }
@@ -48,15 +48,25 @@ int main(void)
                 q++;
             }
             t++;
-            total_q += q;
+            total_q[i] += q;
         }
-        ave_q[i] = (double)total_q / (double)t;
+        ave_q[i] = (double)total_q[i] / (double)t;
         overflow_probability[i] = (double)overflow_count / (double)t;
         t = 0; // 初期化
         q = 0;
-        total_q = 0;
         overflow_count = 0;
     }
 
-    printf("Average queue length = %lf\nGive up ratio = %lf\n", ave_q, overflow_probability);
+    FILE *fout;
+    fout = fopen("out/overflow.dat", "w");
+    for (int i = 0; i < 26; i++)
+    {
+        fprintf(fout, "%lf %lf\n", p1[i], overflow_probability[i]);
+    }
+
+    fout = fopen("out/averageQueLength.dat", "w");
+    for (int i = 0; i < 26; i++)
+    {
+        fprintf(fout, "%lf %lf\n", p1[i], ave_q[i]);
+    }
 }
