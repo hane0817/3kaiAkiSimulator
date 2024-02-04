@@ -35,10 +35,11 @@ int main(void)
                 }
             }
 
-            if (q > K) // 客の人数がKを超えている場合
+            if (q > K - 1) // 客の人数がK以上の場合
             {
                 t++;
                 overflow_count++;
+                total_q[i] += q;
                 continue;
             }
 
