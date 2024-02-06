@@ -3,7 +3,7 @@
 #include <math.h>
 #include "MT.h"
 
-#define TR_SIZE 10
+#define TR_SIZE 1000
 
 struct transaction
 {
@@ -31,7 +31,12 @@ double lmd2 = 0.29;
 int d_q_len[TR_SIZE] = {0};
 int n_arr = 0;
 int f_serv = 0;
-int cap = TR_SIZE;
+int cap = 10;
+
+double exp_rand(double x)
+{
+    return (-log(1.0 - genrand_real2()) * x);
+}
 
 int get_trans()
 {
@@ -44,7 +49,7 @@ int get_trans()
     gwork2 = tr_tab_top->works2;
     gwork3 = tr_tab_top->works3;
     if (tr_tab_top->pre != 0)
-        errprt(101);
+        printf("error");
     n_trans--;
     if (n_trans > 0)
     {
@@ -82,7 +87,7 @@ int w3;
     struct transaction *p;
 
     if (n_trans == TR_SIZE)
-        errprt(100);
+        printf("error 100\n");
 
     tr_tab[n_trans].event_time = ev_time;
     tr_tab[n_trans].event_type = ev_type;
@@ -163,26 +168,40 @@ void service_cmp()
     }
 }
 
-double exp_rand(x)
-{
-    double x;
-    return (-log(1.0 - genrand_real2()) / x);
-}
-
 int main(void)
 {
     int sim_time = 1000;
+    init_genrand(10);
+
+    insert_trans(exp_rand(lmd1), 0, 0, 0, 0);
+
     while (now_time < sim_time)
     {
         switch (get_trans())
         {
         case 0:
         {
-            req_generated();
+            arrival();
+            break;
+        }
+        case 1:
+        {
+            service_cmp();
             break;
         }
         default:
             break;
         }
     }
+
+    printf("溢れ率: %lf\n", (double)n_blk / (double)n_arr);
+    printf("待ち行列長の分布\n");
+    for (int i = 0; i < TR_SIZE; i++)
+    {
+        if (d_q_len[i] != 0)
+        {
+            printf("長さ %d: %d 回\n", i, d_q_len[i]);
+        }
+    }
+    return 0;
 }
